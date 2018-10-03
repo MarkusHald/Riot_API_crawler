@@ -1,0 +1,14 @@
+C:\Users\marku\Desktop\leagueAPI_test\leagueAPI_test\bin\Debug\leagueAPI_test.exe.config
+C:\Users\marku\Desktop\leagueAPI_test\leagueAPI_test\bin\Debug\leagueAPI_test.exe
+C:\Users\marku\Desktop\leagueAPI_test\leagueAPI_test\bin\Debug\leagueAPI_test.pdb
+C:\Users\marku\Desktop\leagueAPI_test\leagueAPI_test\obj\Debug\leagueAPI_test.csprojResolveAssemblyReference.cache
+C:\Users\marku\Desktop\leagueAPI_test\leagueAPI_test\obj\Debug\leagueAPI_test.exe
+C:\Users\marku\Desktop\leagueAPI_test\leagueAPI_test\obj\Debug\leagueAPI_test.pdb
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\bin\Debug\leagueAPI_test.exe.config
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\obj\Debug\leagueAPI_test.exe
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\obj\Debug\leagueAPI_test.pdb
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\bin\Debug\leagueAPI_test.exe
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\bin\Debug\leagueAPI_test.pdb
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\bin\Debug\Newtonsoft.Json.dll
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\bin\Debug\Newtonsoft.Json.xml
+C:\Users\marku\Dropbox\Uni\sem7\projekt\leagueAPI_test\leagueAPI_test\obj\Debug\leagueAPI_test.csprojResolveAssemblyReference.cache
