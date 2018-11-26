@@ -14,17 +14,21 @@ namespace leagueAPI_test
     {
         //https://developer.riotgames.com/game-constants.html id'er til queues   
 
+        static string NAurl = "https://na1.api.riotgames.com";
+        static string EUurl = "https://euw1.api.riotgames.com";
         string url = "https://euw1.api.riotgames.com";
-        string apiKey = "?api_key=RGAPI-b4f38cca-7fca-4bdb-af27-3188a5af087b";
-        private long _currentPatchTime = 1537862400000;
+        string apiKey = "?api_key=RGAPI-d0178390-b74a-4577-b576-a77594bc1992";
+        private long _currentPatchTime = 1542754800000;
         List<string> tempList = new List<string>();
         private JToken[] tempParticipantsArray = new JToken[8];
-        private JToken[] tempStatsArray = new JToken[101];
+        private JToken[] tempStatsArray = new JToken[104];
         private JToken[] tempTimelineArray = new JToken [10];
         List<double> visitedAccounts = new List<double>();
         List<double> matchIDs = new List<double>();
-        public Queue<double> queue = new Queue<double>();
+        public Queue<double> EUqueue = new Queue<double>();
+        public Queue<double> NAqueue = new Queue<double>();
         public List<Match> completedMatches = new List<Match>();
+        public Database database = new Database();
 
         static string GET(string url)
         {
@@ -51,8 +55,16 @@ namespace leagueAPI_test
             }
         }
 
-        public int getAccIDFromName(string sumName)
+        public int getAccIDFromName(string sumName, bool isEU)
         {
+            if (isEU)
+            {
+                url = EUurl;
+            }
+            else
+            {
+                url = NAurl;
+            }
             string summonerFromNameURL = url + "/lol/summoner/v3/summoners/by-name/" + sumName + apiKey;
             int accID = 0;
             Int32.TryParse(GET(summonerFromNameURL).Split(',')[1].Remove(0, 12), out accID);
@@ -60,9 +72,17 @@ namespace leagueAPI_test
             return accID;
         }
                         
-        public List<Match> crawlMatches(double accID)
-        {      
-            string matchHistoryURL = url + "/lol/match/v3/matchlists/by-account/" + accID + apiKey + "&queue=440&season=11&beginTime=" + _currentPatchTime;
+        public List<Match> crawlMatches(double accID, bool isEU)
+        {
+            if (isEU)
+            {
+                url = EUurl;
+            }
+            else
+            {
+                url = NAurl;
+            }
+            string matchHistoryURL = url + "/lol/match/v3/matchlists/by-account/" + accID + apiKey + "&queue=420&season=11&beginTime=" + _currentPatchTime;
             string jsonObj = GET(matchHistoryURL);
             
             JObject jObject = JObject.Parse(jsonObj);
@@ -80,8 +100,16 @@ namespace leagueAPI_test
             return mList;
         }
 
-        public void crawlMatchTimeline(Match m)
+        public void crawlMatchTimeline(Match m, bool isEU)
         {
+            if (isEU)
+            {
+                url = EUurl;
+            }
+            else
+            {
+                url = NAurl;
+            }
             string matchTimelineURL = url + "/lol/match/v3/matches/" + m.getGameID + apiKey;
             string jsonObj = GET(matchTimelineURL);
             List<Player> players = new List<Player>();
@@ -164,6 +192,7 @@ namespace leagueAPI_test
                     Convert.ToBoolean(tempStatsArray[58].First()), role, lane, a1, a2, a3, a4);
 
                 Player p = new Player(Convert.ToInt32(tempParticipantsArray[1].First()), Convert.ToInt32(tempParticipantsArray[2].First()), Convert.ToInt32(tempParticipantsArray[3].First()), Convert.ToInt32(tempParticipantsArray[4].First()), tempParticipantsArray[5].ToString(), ps);
+                
                 players.Add(p);
             }
 
@@ -182,6 +211,7 @@ namespace leagueAPI_test
             m.Bans = banList;
             m.Players = players;
             completedMatches.Add(m);
+            m.toSQL(database);
 
             JToken jparticipantIdentities = jObject["participantIdentities"];
             
@@ -193,20 +223,59 @@ namespace leagueAPI_test
                 if (!visitedAccounts.Contains(accID) && platformID == "EUW1")
                 {
                     visitedAccounts.Add(accID);
-                    queue.Enqueue(accID);
+                    EUqueue.Enqueue(accID);
+                }
+                else if (!visitedAccounts.Contains(accID) && platformID == "NA1")
+                {
+                    visitedAccounts.Add(accID);
+                    NAqueue.Enqueue(accID);
                 }
             }
         }
 
-        public void crawl(double accID)
+        public void crawl(double EUAccID, double NAAccID)
         {
-            List<Match> matches = new List<Match>();
+            List<Match> EUmatches = new List<Match>();
+            List<Match> NAmatches = new List<Match>();
 
-            matches = crawlMatches(accID);
+            EUmatches = crawlMatches(EUAccID, true);
+            NAmatches = crawlMatches(NAAccID, false);
+
+            int EU = EUmatches.Count;
+            int NA = NAmatches.Count;
+            int max = 0;
+
+            if(EU < NA)
+            {
+                max = NA;
+            }
+            else
+            {
+                max = EU;
+            }
+
+            for (int i = 0; i < max; i++)
+            {
+                if (EU < i)
+                {
+                    crawlMatchTimeline(EUmatches[i], true);
+                }
+                if (NA < i)
+                {
+                    crawlMatchTimeline(NAmatches[i], false);
+                }
+                System.Threading.Thread.Sleep(1300);
+            }
+
+
+
+            /*
             foreach (var match in matches)
             {
-                crawlMatchTimeline(match);
+                crawlMatchTimeline(match, isEU);
+                System.Threading.Thread.Sleep(1300);
             }
+            */
         }
     }
 }

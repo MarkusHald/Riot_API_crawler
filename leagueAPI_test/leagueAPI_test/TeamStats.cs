@@ -22,6 +22,7 @@ namespace leagueAPI_test
         private int _baronsKilled;
         private int _dragonsKilled;
         private List<int> _bans = new List<int>();
+        private static int banIDcounter;
 
         public TeamStats(int teamID, bool win, bool firstblood, bool firstTower, bool firstInhib, bool firstBaron, bool firstDragon, bool firstRiftHerald, int towersKilled, int inhibsKilled, int baronsKilled, int dragonsKilled, List<int> bans)
         {
@@ -43,7 +44,25 @@ namespace leagueAPI_test
         }
 
 
+        public void toSQL(Database db) //Needs to be updated if this class will be used
+        {
+            string sql = String.Format("INSERT INTO teamstats VALUES ({0}, {1}, {2}, {3}, {4}, {5} {6} {7} {8}, {9}, {10), {11}, {12});", 
+                _teamID, _win, _firstBlood, _firstTower, _firstInhib, _firstBaron, _firstDragon, _firstRiftHerald, 
+                _towersKilled, _inhibsKilled, _baronsKilled, _dragonsKilled, banIDcounter);
 
+
+            string bans = "INSERT INTO bans VALUES (" + banIDcounter.ToString();
+            foreach (int championID in _bans)
+            {
+                bans += ", " + championID.ToString();
+            }
+            bans += ");";
+            banIDcounter++;
+
+            db.SQLStatement(sql);
+            db.SQLStatement(bans);
+
+        }
 
 
     }

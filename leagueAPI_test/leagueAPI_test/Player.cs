@@ -15,17 +15,18 @@ namespace leagueAPI_test
         private int _summonerSpellTwo;
         private string _rank;
         private PlayerStats _playerStats;
+        private static int _playerStatsIDcounter = 0;
 
         public int TeamID
         {
             get
             {
-                return TeamID;
+                return _teamID;
             }
 
             set
             {
-                TeamID = value;
+                _teamID = value;
             }
         }
         public int Champion
@@ -76,6 +77,7 @@ namespace leagueAPI_test
                 _rank = value;
             }
         }
+        public int ID;
 
 
         public Player(int teamID, int champion, int summonerSpellOne, int summonerSpellTwo, string rank, PlayerStats playerStats)
@@ -84,9 +86,20 @@ namespace leagueAPI_test
             _champion = champion;
             _summonerSpellOne = summonerSpellOne;
             _summonerSpellTwo = SummonerSpellTwo;
-            _rank = rank;
+            _rank = rank.Remove(0, 30);
+            _rank = _rank.Remove(_rank.Length - 1, 1);
             _playerStats = playerStats;
         }
+
+        public void toSQL(Database db, int id)
+        {
+            string sql = String.Format("INSERT INTO player2 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}');", id, _teamID, _champion, _summonerSpellOne, _summonerSpellTwo, _rank, _playerStatsIDcounter);
+            ID = id;
+            db.SQLStatement(sql);
+            _playerStats.toSQL(db, _playerStatsIDcounter);
+            _playerStatsIDcounter++;
+        }
+
 
     }
 }

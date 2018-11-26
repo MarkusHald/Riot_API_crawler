@@ -24,18 +24,15 @@ namespace leagueAPI_test
         private int _MagicDamageDealt;
         private int _physicalDamageDealt;
         private int _trueDamageDealt;   
-
         private int _totalDamageDealtToChampions;
         private int _MagicDamageDealtToChampions;
         private int _physicalDamageDealtToChampions;
         private int _trueDamageDealtToChampions;
-
         private int _totalHealing;
         private int _damageSelfMitigated;
         private int _damageDealtToObjectives;
         private int _DamageDealtToTurrets;
         private int _timeCCingOthers;
-
         private int _totalDamageTaken;
         private int _MagicDamageTaken;
         private int _physicalDamageTaken;
@@ -53,14 +50,17 @@ namespace leagueAPI_test
         private bool _firstbloodAssist;
         private bool _firstTowerKill;
         private bool _firstTowerAssist;
-
         private List<double> _csPerMin = new List<double>();
         private List<double> _xpPerMin = new List<double>();
         private List<double> _goldPerMin = new List<double>();
         private List<double> _damageTakenPerMin = new List<double>();
-        
         private string _role;
         private string _lane;
+        private static int csPerMinIDcounter;
+        private static int xpPerMinIDcounter;
+        private static int goldPerMinIDcounter;
+        private static int damageTakenPerMinIDcounter;
+
         #endregion
 
         /*#region properties
@@ -724,18 +724,15 @@ namespace leagueAPI_test
             _MagicDamageDealt = magicDamageDealt;
             _physicalDamageDealt = physicalDamageDealt;
             _trueDamageDealt = trueDamageDealt;
-
             _totalDamageDealtToChampions = totalDamageDealtToChampions;
             _MagicDamageDealtToChampions = magicDamageDealtToChampions;
             _physicalDamageDealtToChampions = physicalDamageDealtToChampions;
             _trueDamageDealtToChampions = trueDamageDeadToChampions;
-
             _totalHealing = totalHealing;
             _damageSelfMitigated = damageSelfMitigated;
             _damageDealtToObjectives = damageDealtToObjectives;
             _DamageDealtToTurrets = damageDealtToTurrets;
             _timeCCingOthers = timeCCingOthers;
-
             _totalDamageTaken = totalDamageTaken;
             _MagicDamageTaken = magicDamageTaken;
             _physicalDamageTaken = physicalDamageTaken;
@@ -753,15 +750,125 @@ namespace leagueAPI_test
             _firstbloodAssist = firstbloodAssist;
             _firstTowerKill = firstTowerKill;
             _firstTowerAssist = firstTowerAssist;
-
             _csPerMin = csPerMin;
             _xpPerMin = xpPerMin;
             _goldPerMin = goldPerMin;
             _damageTakenPerMin = damageTakenPerMin;
-
-            _role = role;
-            _lane = lane;
+            _role = role.Remove(0, 9);
+            _role = _role.Remove(_role.Length-1,1);
+            _lane = lane.Remove(0, 9);
+            _lane = _lane.Remove(_lane.Length - 1, 1);
+            
 
         }
+
+        public void toSQL(Database db, int id) //Should never be called elsewhere than from the player class
+        {
+            string sql = String.Format("INSERT INTO playerstats2 VALUES({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20}, {21}, {22}, {23}, {24}, {25}, {26}, {27}, {28}, {29}, {30}, {31}, {32}, {33}, {34}, {35}, {36}, {37}, {38}, {39}, {40}, {41}, {42}, {43}, {44}, {45}, '{46}', '{47}');",
+                id, _win, _itemZero, _itemOne, _itemTwo, _itemThree, _itemFour, _itemFive, _itemSix,
+                _kills, _deaths, _assists, _totalDamageDealt, _MagicDamageDealt, _physicalDamageDealt, _trueDamageDealt,
+                _totalDamageDealtToChampions, _MagicDamageDealtToChampions, _physicalDamageDealtToChampions,
+                _trueDamageDealtToChampions, _totalHealing, _damageSelfMitigated, _damageDealtToObjectives, 
+                _DamageDealtToTurrets, _timeCCingOthers, _totalDamageTaken, _MagicDamageTaken, _physicalDamageTaken,
+                _trueDamageTaken, _goldEarned, _goldSpent, _turretkilled, _inhibkilled, _totalMinionsKilled,
+                _neutralMinionKilled, _neutralMinnionKilledTeamJungle, _neutralMinnionKilledEnemyJungle, _totalTimeCCdealt,
+                _firstblood, _firstbloodAssist, _firstTowerKill, _firstTowerAssist, csPerMinIDcounter, xpPerMinIDcounter,
+                goldPerMinIDcounter, damageTakenPerMinIDcounter, _role, _lane);
+            
+
+            string csPerMinSQL = "INSERT INTO cspermin2 VALUES ('" + csPerMinIDcounter;
+            foreach (double item in _csPerMin)
+            {
+                string temp = "";
+                foreach (char let in item.ToString())
+                {
+                    if (let != ',')
+                    {
+                        temp += let;
+                    }
+                    else
+                    {
+                        temp += '.';
+                    }
+                }
+                csPerMinSQL += "', '" + temp;
+            }
+            csPerMinSQL += "');";
+
+            string xpPerMinSQL = "INSERT INTO xppermin2 VALUES ('" + xpPerMinIDcounter;
+            foreach (double item in _xpPerMin)
+            {
+                string temp = "";
+                foreach (char let in item.ToString())
+                {
+                    if (let != ',')
+                    {
+                        temp += let;
+                    }
+                    else
+                    {
+                        temp += '.';
+                    }
+                }
+                xpPerMinSQL += "', '" + temp;
+            }
+            xpPerMinSQL += "');";
+
+            string goldPerMinSQL = "INSERT INTO goldpermin2 VALUES ('" + goldPerMinIDcounter;
+            foreach (double item in _goldPerMin)
+            {
+                string temp = "";
+                foreach (char let in item.ToString())
+                {
+                    if (let != ',')
+                    {
+                        temp += let;
+                    }
+                    else
+                    {
+                        temp += '.';
+                    }
+                }
+                goldPerMinSQL += "', '" + temp;
+            }
+            goldPerMinSQL += "');";
+
+            string damageTakenPerMinSQL = "INSERT INTO damagetakenpermin2 VALUES ('" + damageTakenPerMinIDcounter;
+            foreach (double item in _damageTakenPerMin)
+            {
+                string temp = "";
+                foreach (char let in item.ToString())
+                {
+                    if (let != ',')
+                    {
+                        temp += let;
+                    }
+                    else
+                    {
+                        temp += '.';
+                    }
+                }
+                damageTakenPerMinSQL += "', '" + temp;
+            }
+            damageTakenPerMinSQL += "');";
+
+            //Console.WriteLine(sql);
+            //Console.WriteLine(csPerMinSQL);
+            //Console.WriteLine(xpPerMinSQL);
+            //Console.WriteLine(goldPerMinSQL);
+            //Console.WriteLine(damageTakenPerMinSQL);
+
+            db.SQLStatement(sql);
+            db.SQLStatement(csPerMinSQL);
+            db.SQLStatement(xpPerMinSQL);
+            db.SQLStatement(goldPerMinSQL);
+            db.SQLStatement(damageTakenPerMinSQL);
+
+            xpPerMinIDcounter++;
+            csPerMinIDcounter++;
+            goldPerMinIDcounter++;
+            damageTakenPerMinIDcounter++;
+        }
+
     }
 }
